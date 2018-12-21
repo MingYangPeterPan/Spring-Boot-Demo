@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration scan="true" scanPeriod="60 seconds" debug="false">
+    <contextName>classroom</contextName>
+    <timestamp key="bySecond" datePattern="yyyyMMdd'T'HHmmss"/>
+
+    <property name="FILE_LOG_PATTERN"
+              value="===%d{yyyy-MM-dd HH:mm:ss.SSS} %logger Line:%-3L - %msg%n"/>
+
+    <springProperty scope="context" name="applicationLogPath" source="endpoints.logfolder.folderPath"/>
+    <springProperty scope="context" name="apiLogPath" source="apilog.logfolder.folderPath"/>
+
+    <include resource="org/springframework/boot/logging/logback/defaults.xml" />
+    <include resource="org/springframework/boot/logging/logback/console-appender.xml"/>
+    <!-- This one is size based log appender, we will not use it -->
+    <!-- <include resource="org/springframework/boot/logging/logback/file-appender.xml" /> -->
+
+    <jmxConfigurator/>
+
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>1-%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger - %msg%n</pattern>
+            <charset>utf-8</charset>
+        </encoder>
+    </appender>
+
+    <!-- This one is time based log appender, we will use it -->
+    <appender name="FILE_TIME_BASED" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+        <fileNamePattern>${applicationLogPath}/vip-application.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>${FILE_LOG_PATTERN}</pattern>
+            <charset>utf-8</charset>
+        </encoder>
+      </appender>
+
+    <appender name="API_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${apiLogPath}/api-log.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>${FILE_LOG_PATTERN}</pattern>
+            <charset>utf-8</charset>
+        </encoder>
+    </appender>
+
+    <logger name="com.ito.vip.common.web.log.APILogAspect" level="INFO" additivity="false">
+        <appender-ref ref="API_LOG"/>
+    </logger>
+
+    <root level="INFO">
+        <!-- Do not use the size based log file appender -->
+        <appender-ref ref="STDOUT" />
+        <appender-ref ref="FILE_TIME_BASED" />
+    </root>
+
+    <!-- <pattern>
+        %d{yyyy-MM-dd HH:mm:ss} [%level] - %msg%n
+        Logger: %logger
+        Class: %class
+        File: %file
+        Caller: %caller
+        Line: %line
+        Message: %m
+        Method: %M
+        Relative: %relative
+        Thread: %thread
+        Exception: %ex
+        xException: %xEx
+        nopException: %nopex
+        rException: %rEx
+        Marker: %marker
+        newline:%n
+    </pattern> -->
+
+
+    <!-- Hibernate log -->
+    <!-- <logger name="org.hibernate.type.descriptor.sql.BasicBinder" level="TRACE" />
+    <logger name="org.hibernate.type.descriptor.sql.BasicExtractor" level="DEBUG" />
+    <logger name="org.hibernate.SQL" level="DEBUG" />
+    <logger name="org.hibernate.engine.QueryParameters" level="DEBUG" />
+    <logger name="org.hibernate.engine.query.HQLQueryPlan" level="DEBUG" /> -->
+
+    <!--Mybatis log -->
+    <!-- <logger name="com.apache.ibatis" level="TRACE"/>
+    <logger name="java.sql.Connection" level="DEBUG"/>
+    <logger name="java.sql.Statement" level="DEBUG"/>
+    <logger name="java.sql.PreparedStatement" level="DEBUG"/> -->
+
+
+    <!-- <springProfile name="qa">
+        <root level="INFO">
+             Do not use the size based log file appender
+            <appender-ref ref="STDOUT" />
+            <appender-ref ref="FILE_TIME_BASED" />
+            <appender-ref ref="API_LOG" />
+         </root>
+    </springProfile>
+
+    <springProfile name="staging">
+        <root level="INFO">
+            Do not use the size based log file appender
+            <appender-ref ref="STDOUT" />
+            <appender-ref ref="FILE_TIME_BASED" />
+            <appender-ref ref="API_LOG" />
+        </root>
+    </springProfile> -->
+
+</configuration>
+
+
+
+
+

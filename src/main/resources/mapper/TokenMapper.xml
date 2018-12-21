@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ito.vip.model.Token">
+    <resultMap type="Token" id="tokenMap">
+        <id column="pk_id" property="pkId"/>
+        <result column="value_field" property="valueField"/>
+        <result column="user_id" property="userId"/>
+        <result column="device_id" property="deviceId" />
+        <result column="login_date" property="loginDate"/>
+        <result column="expire_date" property="expireDate"/>
+    </resultMap>
+
+    <insert id="create" parameterType="Token" useGeneratedKeys="true" keyProperty="pkId">
+        <![CDATA[
+            insert into
+                token(value_field, user_id, device_id, login_date, expire_date)
+            values
+                (#{valueField}, #{userId}, #{deviceId}, #{loginDate}, #{expireDate})
+        ]]>
+    </insert>
+
+    <select id="getById" parameterType="Long" resultMap="tokenMap">
+        <![CDATA[
+            select * from token where pk_id = #{id}
+        ]]>
+    </select>
+
+    <update id="update" parameterType="Token">
+        <![CDATA[
+            update token
+            set
+                value_field = #{valueField},
+                user_id = #{userId},
+                device_id = #{deviceId},
+                login_date = #{loginDate},
+                expire_date = #{expireDate}
+            where pk_id = #{pkId}
+        ]]>
+    </update>
+
+    <delete id="delete" parameterType="Long">
+        <![CDATA[
+            delete from token where pk_id = #{pkId}
+        ]]>
+    </delete>
+
+    <select id="getTokenByValue" parameterType="String" resultMap="tokenMap">
+        <![CDATA[
+            select * from token where value_field = #{valueField}
+        ]]>
+    </select>
+
+    <delete id="deleteTokenByValue" parameterType="String">
+        <![CDATA[
+            delete from token where value_field = #{valueField}
+        ]]>
+    </delete>
+
+</mapper>

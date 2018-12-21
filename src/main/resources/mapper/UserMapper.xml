@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ito.vip.model.User">
+    <resultMap type="User" id="userMap">
+        <id column="pk_id" property="pkId"/>
+        <result column="username" property="username"/>
+        <result column="password" property="password"/>
+        <result column="last_name" property="lastName"/>
+        <result column="first_name" property="firstName"/>
+        <!--<result column="is_active" property="isActive"/>-->
+        <result column="is_active" property="isActive" typeHandler="com.ito.vip.common.dao.mybatis.typehandler.BooleanTypeHandler"/>
+        <result column="email" property="email" />
+    </resultMap>
+
+    <insert id="create" parameterType="User" useGeneratedKeys="true" keyProperty="pkId">
+        <![CDATA[
+            insert into
+                user(username, password, last_name, first_name, is_active, email)
+            values
+                (#{username}, #{password}, #{firstName}, #{lastName}, #{isActive, typeHandler = com.ito.vip.common.dao.mybatis.typehandler.BooleanTypeHandler}, #{email})
+        ]]>
+    </insert>
+
+    <select id="getById" parameterType="Long" resultMap="userMap">
+        <![CDATA[
+            select * from user where pk_id = #{id}
+        ]]>
+    </select>
+
+    <update id="update" parameterType="User">
+        <![CDATA[
+            update user
+            set
+                username = #{username},
+                password = #{password},
+                email = #{email},
+                first_name = #{firstName},
+                last_name = #{lastName},
+                is_active = #{isActive}
+            where pk_id = #{pkId}
+        ]]>
+    </update>
+
+     <update id="delete" parameterType="Long">
+        <![CDATA[
+            update user
+            set
+                is_active = 'false'
+            where pk_id = #{pkId}
+        ]]>
+    </update>
+
+    <select id="getUserByName" parameterType="String" resultMap="userMap">
+        <![CDATA[
+            select * from user where username = #{username}
+        ]]>
+    </select>
+
+    <select id="getUserListByUserId" parameterType="Long" resultMap="userMap">
+        <![CDATA[
+            select * from user where created_by = #{userId}
+        ]]>
+    </select>
+
+    <select id="getUserAuthorities" parameterType="Long" resultType="String">
+        <![CDATA[
+            select distinct
+                r.role_name
+            from user u
+            inner join user_role ur on ur.user_id = u.pk_id
+            inner join role r on r.pk_id = ur.role_id
+            where u.pk_id = #{userId}
+        ]]>
+    </select>
+</mapper>

@@ -1,0 +1,9 @@
+/target/
+/tomcat/
+/.idea/copyright/*.xml
+/.idea/libraries/*.xml
+/.idea/*.xml
+/.settings/*.prefs
+/*.iml
+.idea
+/vip.iml
